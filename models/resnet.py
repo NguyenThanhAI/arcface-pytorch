@@ -163,7 +163,7 @@ class ResNetFace(nn.Module):
         self.inplanes = 64
         self.use_se = use_se
         super(ResNetFace, self).__init__()
-        self.conv1 = nn.Conv2d(1, 64, kernel_size=3, padding=1, bias=False)
+        self.conv1 = nn.Conv2d(3, 64, kernel_size=3, padding=1, bias=False)
         self.bn1 = nn.BatchNorm2d(64)
         self.prelu = nn.PReLU()
         self.maxpool = nn.MaxPool2d(kernel_size=2, stride=2)
@@ -173,7 +173,8 @@ class ResNetFace(nn.Module):
         self.layer4 = self._make_layer(block, 512, layers[3], stride=2)
         self.bn4 = nn.BatchNorm2d(512)
         self.dropout = nn.Dropout()
-        self.fc5 = nn.Linear(512 * 8 * 8, 512)
+        #self.fc5 = nn.Linear(512 * 8 * 8, 512)
+        self.fc5 = nn.Linear(25088, 512)
         self.bn5 = nn.BatchNorm1d(512)
 
         for m in self.modules():
@@ -215,6 +216,7 @@ class ResNetFace(nn.Module):
         x = self.bn4(x)
         x = self.dropout(x)
         x = x.view(x.size(0), -1)
+        #print(x.shape)
         x = self.fc5(x)
         x = self.bn5(x)
 
